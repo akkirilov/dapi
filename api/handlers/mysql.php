@@ -57,7 +57,9 @@ function select($username, $password, $dbname, $table, $where, $host, $port) {
         }
 
     }
+
     $conn->close();
+    
     return $res;
 }
 
@@ -90,9 +92,11 @@ function post($username, $password, $dbname, $table, $body, $host, $port) {
             $res['msg'] = "New record created successfully";
         } else {
             $res['error'] = true;
-            $res['msg'] = "Error: " . $sql . "<br>" . $conn->error;
+            $res['msg'] = "Error in " . $sql . " Caused by: " . $conn->error;
         }
     }
+
     $conn->close();
+
     return $res;
 }
