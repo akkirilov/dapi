@@ -4,45 +4,16 @@ function authenticate($user, $pass) {
     return ['error' => false];
 }
 
-function parseQueryString($queryString) {
-    $res = "";
-    if (empty($queryString) || strpos($queryString, ";") > -1) {
-        return $res;
-    }
-    
-    $params = explode("&", $queryString);
-    $len = count($params);
-    for ($i = 0; $i < $len; $i++) { 
-        $tokens = explode("=", $params[$i]);
-        if (is_numeric($tokens[1])) {
-            if (strpos($queryString, ".gt") > -1) {
-                $res .= substr($tokens[0], 0, -3) . ">" . $tokens[1];
-            } else if (strpos($queryString, ".lt") > -1) {
-                $res .= substr($tokens[0], 0, -3) . "<" . $tokens[1];
-            } else {
-                $res .= $tokens[0] . "=" . $tokens[1];
-            }
-        } else {
-            $res .= $tokens[0] . "='" . $tokens[1] . "'";
-        }
-
-        if ($i < ($len - 1)) {
-            $res .= " AND ";
-        }
-    }
-
-    return $res;
-}
-
 function getHandler($user, $pass, $db, $table, $queryString) {
     include_once('config.php');
     include_once($DB_HANDLER);
 
     $where = parseQueryString($queryString);
-    $res = select($user, $pass, $db, $table, $where);
-    echo $queryString . "<br />";
-    echo $where . "<br />";
-    echo "<pre>" . print_r($res) . "</pre>";
+
+    $res = select($user, $pass, $db, $table, $where, $DB_HOST, $DB_PORT);
+
+    echo json_encode($res);
+
     return;
 }
 

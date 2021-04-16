@@ -17,7 +17,7 @@ To copy the nginx conf file to the nginx sites-enabled dir, run from deploy dir:
 - `sudo bash install.sh`
 
 To create new user and database, run from deploy dir:
-- `sudo bash mysql_new_user.sh user pass database host`
+- `sudo bash mariadb_new_user.sh user pass database host`
 
 Anyway, you can edit the shell scripts as you want, so you can use more secure way for creating users and databases. The same is valid for the basic dapi.conf file.
 
@@ -57,10 +57,13 @@ The default handler is mysql, if use other, don't forget to register it in confi
 ## Custom handlers
 Every handler should have next functions, accepting the specified arguments:
 
-- `select($user, $pass, $db, $table, $where)`
-- `post($user, $pass, $db, $table, $body)`
-- `put($user, $pass, $db, $table, $where, $body)`
-- `patch($user, $pass, $db, $table, $where, $body)`
-- `delete($user, $pass, $db, $table, $where)`
+- `parseQueryString($queryString)`
+- `select($user, $pass, $db, $table, $where, $DB_HOST, $DB_PORT)`
+- `post($user, $pass, $db, $table, $body, $DB_HOST, $DB_PORT)`
+- `put($user, $pass, $db, $table, $where, $body, $DB_HOST, $DB_PORT)`
+- `patch($user, $pass, $db, $table, $where, $body, $DB_HOST, $DB_PORT)`
+- `delete($user, $pass, $db, $table, $where, $DB_HOST, $DB_PORT)`
+
+$DB_HANDLER, $DB_HOST and $DB_PORT should be configured in config.php.
 
 
