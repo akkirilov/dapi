@@ -56,7 +56,7 @@ function select($username, $password, $dbname, $table, $where, $host, $port) {
             $res['msg'] = "No results.";
         }
 
-        $conn->close();
-        return $res;
     }
+    $conn->close();
+    return $res;
 }
