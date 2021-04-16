@@ -58,6 +58,8 @@ The default handler is mysql, if use other, don't forget to register it in confi
 Every handler should have next functions, accepting the specified arguments:
 
 - `parseQueryString($queryString)`
+- `parseBodyKeys($body)`
+- `parseBodyValues($body)`
 - `select($user, $pass, $db, $table, $where, $DB_HOST, $DB_PORT)`
 - `post($user, $pass, $db, $table, $body, $DB_HOST, $DB_PORT)`
 - `put($user, $pass, $db, $table, $where, $body, $DB_HOST, $DB_PORT)`

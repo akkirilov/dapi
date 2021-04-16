@@ -2,7 +2,7 @@
 
 function parseQueryString($queryString) {
     $res = "";
-    if (empty($queryString) || strpos($queryString, ";") > -1) {
+    if (empty($queryString) || empty(strpos($queryString, ";"))) {
         return $res;
     }
     
@@ -28,6 +28,32 @@ function parseQueryString($queryString) {
     }
 
     return $res;
+}
+
+function parseBodyKeys($body) {
+    $columns = [];
+    foreach($body as $k => $v){
+        if (empty(strpos($k, ";"))) {
+            $columns[] = $k;
+        }
+    }
+
+    return $columns;
+}
+
+function parseBodyValues($body) {
+    $values = [];
+    foreach($body as $k => $v){
+        if (empty(strpos($v, ";"))) {
+            if (is_numeric($v[1])) {
+                $values[] = $v;
+            } else {
+                $values[] = "'" . $v . "'";
+            }
+        }
+    }
+
+    return $values;
 }
 
 function select($username, $password, $dbname, $table, $where, $host, $port) {
@@ -59,27 +85,20 @@ function select($username, $password, $dbname, $table, $where, $host, $port) {
     }
 
     $conn->close();
-    
+
     return $res;
 }
 
 function post($username, $password, $dbname, $table, $body, $host, $port) {
     $res = [];
 
-    $columns = [];
-    $values = [];
-    foreach($body as $k => $v){
-        $columns[] = $k;
-        if (is_numeric($tokens[1])) {
-            $values[] = $v;
-        } else {
-            $values[] = "'" . $v . "'";
-        }
-    }
+    $columns = parseBodyKeys($body);
+    $values = parseBodyValues($body);
 
     if (count($columns) != count($values)) {
         $res['error'] = true;
         $res['msg'] = "Body is incorrect!";
+        return $res;
     }
 
     $sql = "INSERT INTO " . $table . "(" . implode(",", $columns) . ") VALUES (" . implode(",", $values) . ");";
