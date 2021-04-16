@@ -1,10 +1,32 @@
 <?php
 
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Headers: *');
+header('Access-Control-Allow-Methods: GET, POST, PUT');
+
+
+function getPostBody()
+{
+    if (!empty($_POST)) {
+        // when using application/x-www-form-urlencoded or multipart/form-data as the HTTP Content-Type in the request
+        // NOTE: if this is the case and $_POST is empty, check the variables_order in php.ini! - it must contain the letter P
+        return $_POST;
+    }
+
+    // when using application/json as the HTTP Content-Type in the request 
+    $post = json_decode(file_get_contents('php://input'), true);
+    if (json_last_error() == JSON_ERROR_NONE) {
+        return $post;
+    }
+
+    return [];
+}
+
 function authenticate($user, $pass) {
     return ['error' => false];
 }
 
-function get($user, $pass, $db, $table, $queryString) {
+function handleGetRequest($user, $pass, $db, $table, $queryString) {
     include_once('config.php');
     include_once($DB_HANDLER);
 
@@ -12,6 +34,18 @@ function get($user, $pass, $db, $table, $queryString) {
 
     $res = select($user, $pass, $db, $table, $where, $DB_HOST, $DB_PORT);
 
+    echo json_encode($res);
+
+    return;
+}
+
+function handlePostRequest($user, $pass, $db, $table) {
+    include_once('config.php');
+    include_once($DB_HANDLER);
+
+    $body = getPostBody();
+
+    $res = post($user, $pass, $db, $table, $body, $DB_HOST, $DB_PORT);
     echo json_encode($res);
 
     return;
@@ -47,10 +81,10 @@ array_shift($uriParams);
 
 switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
-        get($user, $pass, $db, $table, $_SERVER['QUERY_STRING']);
+        handleGetRequest($user, $pass, $db, $table, $_SERVER['QUERY_STRING']);
         break;
     case 'POST':
-        # code...
+        handlePostRequest($user, $pass, $db, $table);
         break;
     case 'PUT':
         # code...

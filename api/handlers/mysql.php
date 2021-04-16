@@ -60,3 +60,39 @@ function select($username, $password, $dbname, $table, $where, $host, $port) {
     $conn->close();
     return $res;
 }
+
+function post($username, $password, $dbname, $table, $body, $host, $port) {
+    $res = [];
+
+    $columns = [];
+    $values = [];
+    foreach($body as $k => $v){
+        $columns[] = $k;
+        if (is_numeric($tokens[1])) {
+            $values[] = $v;
+        } else {
+            $values[] = "'" . $v . "'";
+        }
+    }
+
+    if (count($columns) != count($values)) {
+        $res['error'] = true;
+        $res['msg'] = "Body is incorrect!";
+    }
+
+    $sql = "INSERT INTO " . $table . "(" . implode(",", $columns) . ") VALUES (" . implode(",", $values) . ");";
+    $conn = new mysqli($host, $username, $password, $dbname, $port);
+    if ($conn->connect_error) {
+        $res['error'] = true;
+        $res['msg'] = "Connection failed: " . $conn->connect_error;
+    } else {
+        if ($conn->query($sql) === TRUE) {
+            $res['msg'] = "New record created successfully";
+        } else {
+            $res['error'] = true;
+            $res['msg'] = "Error: " . $sql . "<br>" . $conn->error;
+        }
+    }
+    $conn->close();
+    return $res;
+}
