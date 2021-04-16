@@ -4,7 +4,7 @@ function authenticate($user, $pass) {
     return ['error' => false];
 }
 
-function getHandler($user, $pass, $db, $table, $queryString) {
+function get($user, $pass, $db, $table, $queryString) {
     include_once('config.php');
     include_once($DB_HANDLER);
 
@@ -16,23 +16,6 @@ function getHandler($user, $pass, $db, $table, $queryString) {
 
     return;
 }
-
-
-
-// function postHandler() {
-//     var_dump($_SERVER['REQUEST_URI']);
-
-// }
-
-// function putHandler() {
-//     var_dump($_SERVER['REQUEST_URI']);
-
-// }
-
-// function patchHandler() {
-//     var_dump($_SERVER['REQUEST_URI']);
-
-// }
 
 $uriParams = explode("/", explode("?", $_SERVER['REQUEST_URI'])[0]);
 array_shift($uriParams);
@@ -64,7 +47,7 @@ array_shift($uriParams);
 
 switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
-        getHandler($user, $pass, $db, $table, $_SERVER['QUERY_STRING']);
+        get($user, $pass, $db, $table, $_SERVER['QUERY_STRING']);
         break;
     case 'POST':
         # code...
@@ -74,7 +57,6 @@ switch ($_SERVER['REQUEST_METHOD']) {
         break;
     case 'PATCH':
         # code...
-        breagetHandlerk;
     case 'DELETE':
         # code...
         break;
